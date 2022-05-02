@@ -17,10 +17,24 @@ use App\Models\Produto;
 use Illuminate\Http\Request;
 
 Route::get('/', function () {
-    return view('inicio');
+    echo "<script>document.location = '/listar'</script>";
 });
 
-Route::get('/cadastrar-produto', function(Request $request) {
+Route::get('/listar', function () {
+    $produto = Produto::get();
+    return view('listar', ['produto' => $produto]);
+});
+
+Route::get('/cadastrar', function(){
+    return view('cadastrar');
+});
+
+Route::get('/editar/{id}', function($id){
+    $produto = Produto::find($id);
+    return view('editar', ['produto' => $produto]);
+});
+
+Route::post('/cadastrar-produto', function(Request $request) {
 
     Produto::create([
         'nome' => $request->nome,
@@ -28,6 +42,25 @@ Route::get('/cadastrar-produto', function(Request $request) {
         'estoque' => $request->estoque
     ]);
 
-    echo "Produto criado com sucesso";
+    echo "<script>alert('Produto $request->nome cadastrado!')</script>";
+    echo "<script>document.location = '/listar'</script>";
 
+});
+
+Route::post('/editar-produto/{id}', function(Request $request, $id){
+    $produto = Produto::find($id);
+    $produto->update([
+        'nome' => $request->nome,
+        'valor' => $request->valor,
+        'estoque' => $request->estoque
+    ]);
+    echo "<script>alert('Produto $produto->nome editado!')</script>";
+    echo "<script>document.location = '/listar'</script>";
+});
+
+Route::get('/deletar-produto/{id}', function($id){
+    $produto = Produto::find($id);
+    $produto->delete();
+    echo "<script>alert('Produto $produto->nome deletado!')</script>";
+    echo "<script>document.location = '/listar'</script>";
 });
