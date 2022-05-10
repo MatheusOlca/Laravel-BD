@@ -35,19 +35,25 @@ Route::get('/editar/{id}', function($id){
 });
 
 Route::post('/cadastrar-produto', function(Request $request) {
-
+    if($request->nome == '' || $request->valor == '' || $request->estoque == ''){
+        echo "<script>alert('Campo Vazio!')</script>";
+        echo "<script>document.location = '/cadastrar'</script>";
+    }
     Produto::create([
         'nome' => $request->nome,
         'valor' => $request->valor,
         'estoque' => $request->estoque
     ]);
-
-    echo "<script>alert('Produto $request->nome cadastrado!')</script>";
+    echo "<script>alert('Produto \"$request->nome\" cadastrado!')</script>";
     echo "<script>document.location = '/listar'</script>";
 
 });
 
 Route::post('/editar-produto/{id}', function(Request $request, $id){
+    if($request->nome == '' || $request->valor == '' || $request->estoque == ''){
+        echo "<script>alert('Produto sem Nome!')</script>";
+        echo "<script>document.location = '/cadastrar'</script>";
+    }
     $produto = Produto::find($id);
     $produto->update([
         'nome' => $request->nome,
